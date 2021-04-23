@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import matplotlib.pyplot as plt
 
-def train_model(model, criterion, dataloaders, optimizer, metrics, results_path, num_epochs) -> torch.nn.Module:
+def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results_path, num_epochs) -> torch.nn.Module:
     """Trains PyTorch model.
 
     Args:
@@ -17,7 +17,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, results_path,
         criterion (torch.nn): Loss function. 
         dataloaders (torch.utils.data.DataLoader): Dataloader.
         optimizer (torch.optim): Optimizing algorithm.
-        metrics (list): Metrics to assess model performance (from sklearn.metrics).
+        metrics (dict): Metrics to assess model performance (from sklearn.metrics).
         results_path (str): Path to results, i.e. log of metrics and best weights.
         num_epochs (int): Number of epochs to run.
 
