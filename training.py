@@ -9,12 +9,12 @@ from tqdm import tqdm
 
 import matplotlib.pyplot as plt
 
-def train_model(model, criterion = nn.MSELoss(), dataloaders, optimizer, metrics, results_path, num_epochs) -> torch.nn.Module:
+def train_model(model, criterion, dataloaders, optimizer, metrics, results_path, num_epochs) -> torch.nn.Module:
     """Trains PyTorch model.
 
     Args:
         model (torch.nn.Module): Model to train.
-        criterion (torch.nn): Loss function. Defaults to MSELoss().
+        criterion (torch.nn): Loss function. 
         dataloaders (torch.utils.data.DataLoader): Dataloader.
         optimizer (torch.optim): Optimizing algorithm.
         metrics (list): Metrics to assess model performance (from sklearn.metrics).
