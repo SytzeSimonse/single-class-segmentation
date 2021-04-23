@@ -40,4 +40,4 @@ def randomly_remove_tiles(root, image_folder, mask_folder, num_of_tiles, verbose
         os.remove(mask_folder_path / sorted(os.listdir(mask_folder_path))[idx])
 
     if verbose:
-        print(f"The number of tiles has been reduced from {image_count} to {image_count-num_of_tiles}."
+        print(f"The number of tiles has been reduced from {image_count} to {image_count-num_of_tiles}.")
