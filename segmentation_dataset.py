@@ -141,8 +141,11 @@ class SegmentationDataset(VisionDataset):
                   random_crop                                            
                 ])
             
-            # Converting image and mask into tensor
-            sample["image"] = transforms.ToTensor()(sample["image"])
-            sample["mask"] = transforms.ToTensor()(sample["mask"])
+            # Transforming
+            if self.transform:
+                sample["image"] = self.transform(sample["image"])
+
+            if self.target_transform:
+                sample["mask"] = self.target_transform(sample["mask"])
 
             return sample
