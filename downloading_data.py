@@ -65,7 +65,3 @@ def download_url(url, output_path):
         urllib.request.urlretrieve(
             url, filename=output_path, reporthook=t.update_to
             )
-
-download_tiles(
-    data_url='https://www.dropbox.com/s/mwr81oh0dvvzqhj/DATASET_C.tar.gz?dl=1'
-)
