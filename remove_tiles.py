@@ -2,7 +2,7 @@ from random import sample
 from pathlib import Path
 import os
 
-def randomly_remove_tiles(root, image_folder, mask_folder, num_of_tiles):
+def randomly_remove_tiles(root, image_folder, mask_folder, num_of_tiles, verbose=True):
     # Creating paths
     image_folder_path = Path(root) / image_folder
     mask_folder_path = Path(root) / mask_folder
@@ -39,3 +39,5 @@ def randomly_remove_tiles(root, image_folder, mask_folder, num_of_tiles):
         os.remove(image_folder_path / sorted(os.listdir(image_folder_path))[idx])
         os.remove(mask_folder_path / sorted(os.listdir(mask_folder_path))[idx])
 
+    if verbose:
+        print(f"The number of tiles has been reduced from {image_count} to {image_count-num_of_tiles}."
