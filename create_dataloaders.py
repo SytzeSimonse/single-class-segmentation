@@ -28,7 +28,7 @@ def create_dataloader(
     """
     # Creating the dataloader
     image_datasets = {
-            x: SegmentationDataset(
+            phase: SegmentationDataset(
                 root=root,
                 image_folder=images_folder_name,
                 mask_folder=masks_folder_name,
