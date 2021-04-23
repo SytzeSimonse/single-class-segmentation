@@ -2,3 +2,4 @@ data/
 tiles/
 .vscode/
 __pycache__/
+test_remove/
