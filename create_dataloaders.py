@@ -1,7 +1,7 @@
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 
-import segmentation_dataset
+from segmentation_dataset import SegmentationDataset
 
 def create_dataloader(
     root: str = 'Tiles', 
