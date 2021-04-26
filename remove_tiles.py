@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 from tqdm import tqdm
 from PIL import Image
+import numpy as np
 
 def randomly_remove_tiles(root: str, image_folder: str, mask_folder: str, num_of_tiles: int, verbose=True):
     # Creating paths
