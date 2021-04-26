@@ -261,12 +261,3 @@ class SegmentationDataset(VisionDataset):
                 os.remove(mask_path / tile_png)
             return True
             
-my_dataset = SegmentationDataset(root='tiles', image_folder='Images', mask_folder='Masks')
-num_non_empty_tiles = my_dataset.count_non_empty_tiles()
-num_empty_tiles = my_dataset.count_empty_tiles()
-
-print(f"Non-empty tiles: {num_non_empty_tiles}")
-print(f"Empty tiles: {num_empty_tiles}")
-
-num_to_remove = len(my_dataset) - num_non_empty_tiles
-my_dataset.remove_empty_tiles(num_to_remove)

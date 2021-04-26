@@ -107,10 +107,3 @@ def is_empty_tile(tile_path: str) -> bool:
     if np.all((img_array == 0)):
         return True
     return False
-
-#remove_empty_tiles(root='test_remove', image_folder='Images', mask_folder='Masks', num_of_tiles=1)
-
-print(len(get_empty_tiles()))
-
-#is_empty_tile('/home/sytze/Code/DeepLabV3Plus_implementation-single-class/test_remove/Masks/tile_pinet1-2019_2048_5632.png')
-#is_empty_tile('/home/sytze/Code/DeepLabV3Plus_implementation-single-class/test_remove/Masks/tile_pinet1-2019_2048_5120.png')
