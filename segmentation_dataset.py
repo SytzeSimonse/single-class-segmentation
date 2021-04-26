@@ -215,7 +215,10 @@ class SegmentationDataset(VisionDataset):
         num_empty_tiles = self.count_empty_tiles()
         return len(self) - num_empty_tiles
 
-    def remove_empty_tiles(self, num_of_tiles: int) -> bool:
+    def remove_empty_tiles(self, num_of_tiles: int, balanced_classes: bool = False) -> bool:
+        if balanced_classes:
+            num_of_tiles = len(self) - self.count_non_empty_tiles()
+        
         # Checking if the number of tiles to remove is larger than 0
         if not num_of_tiles > 0:
             raise ValueError(

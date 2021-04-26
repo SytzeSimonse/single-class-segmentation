@@ -40,7 +40,17 @@ def remove_empty_tiles(root: str, image_folder: str, mask_folder: str, num_of_ti
             os.remove(image_path / tile_jpg)
             os.remove(mask_path / tile_png)
 
-def get_empty_tiles(root: str = 'tiles', mask_folder: str = 'Masks', verbose: bool = True):
+def get_empty_tiles(root: str = 'tiles', mask_folder: str = 'Masks', verbose: bool = True) -> list:
+    """Gets a list of all the 'empty' (=  background-only) tiles in a segmentation dataset.
+
+    Args:
+        root (str, optional): Root directory. Defaults to 'tiles'.
+        mask_folder (str, optional): Name of masks folder (under root). Defaults to 'Masks'.
+        verbose (bool, optional): Printing messages. Defaults to True.
+
+    Returns:
+        list: List of empty tiles.
+    """
     # Create list for empty files
     empty_tiles = []
 
@@ -98,7 +108,9 @@ def is_empty_tile(tile_path: str) -> bool:
         return True
     return False
 
-remove_empty_tiles(root='test_remove', image_folder='Images', mask_folder='Masks', num_of_tiles=1)
+#remove_empty_tiles(root='test_remove', image_folder='Images', mask_folder='Masks', num_of_tiles=1)
+
+print(len(get_empty_tiles()))
 
 #is_empty_tile('/home/sytze/Code/DeepLabV3Plus_implementation-single-class/test_remove/Masks/tile_pinet1-2019_2048_5632.png')
 #is_empty_tile('/home/sytze/Code/DeepLabV3Plus_implementation-single-class/test_remove/Masks/tile_pinet1-2019_2048_5120.png')
