@@ -1,3 +1,7 @@
+import os
+from tqdm import tqdm
+from random import sample
+
 from pathlib import Path
 from typing import Any, Callable, Optional
 
@@ -32,15 +36,15 @@ class SegmentationDataset(VisionDataset):
     """
     def __init__(
         self, root: str, 
-        image_folder: str, 
-        mask_folder: str,
+        image_folder: str = 'Images', 
+        mask_folder: str = 'Masks',
         seed: int = None,
         fraction: float = None,
         subset: str = None,
         transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,
-        image_color_mode: str = "rgb",
-        mask_color_mode: str = "grayscale",
+        image_color_mode: str = 'rgb',
+        mask_color_mode: str = 'grayscale',
         data_augmentation: bool = False) -> None:
 
         # Initializing the base class (i.e. VisionDataset)
@@ -51,6 +55,9 @@ class SegmentationDataset(VisionDataset):
         self.target_transform = target_transform
         self.subset = subset
         self.data_augmentation = data_augmentation
+
+        self.image_folder = image_folder
+        self.mask_folder = mask_folder
 
         # Creating paths to image and mask folders
         image_folder_path = Path(self.root) / image_folder
@@ -153,3 +160,110 @@ class SegmentationDataset(VisionDataset):
                 sample["mask"] = self.target_transform(sample["mask"])
 
             return sample
+
+    def get_empty_tiles(self) -> list:
+        def is_empty_tile(tile_path: str) -> bool:
+            # Creating path of tile file
+            tile_fpath = Path(tile_path)
+
+            # Checking if file exists
+            if not tile_fpath.exists():
+                raise FileNotFoundError(
+                    f"'{tile_path}' does not exist."
+                )
+
+            # Checking if image extension
+            allowed_extensions = ['.png', '.jpg', '.jpeg']
+            tile_extension = os.path.splitext(tile_fpath)[1]
+
+            if not tile_extension in allowed_extensions:
+                raise ValueError(
+                    f"'{tile_extension}' files cannot be used with this function."
+                )
+
+            # Opening image
+            img = Image.open(tile_path)
+
+            # Reading into NumPy
+            img_array = np.asarray(img)
+
+            # Check if all values are zero
+            if np.all((img_array == 0)):
+                return True
+            return False
+
+        # Create list for empty files
+        empty_tiles = []
+
+        # Creating path to mask folder
+        mask_folder_path = Path(self.root) / self.mask_folder
+
+        # Getting masks
+        masks = os.listdir(mask_folder_path)
+
+        # Looping through masks
+        for mask in tqdm(masks, desc="Finding all empty masks..."):
+            mask_path = mask_folder_path / mask
+            empty_tiles.append(mask) if is_empty_tile(mask_path) else None
+
+        return empty_tiles
+
+    def count_empty_tiles(self) -> int:
+        return len(self.get_empty_tiles())
+
+    def count_non_empty_tiles(self) -> int:
+        num_empty_tiles = self.count_empty_tiles()
+        return len(self) - num_empty_tiles
+
+    def remove_empty_tiles(self, num_of_tiles: int) -> bool:
+        # Checking if the number of tiles to remove is larger than 0
+        if not num_of_tiles > 0:
+            raise ValueError(
+                f"The number of tiles to remove should be more than 0."
+            )
+
+        # Getting empty tiles as list
+        empty_tiles = self.get_empty_tiles()
+
+        if len(empty_tiles) == 0:
+            print(f"There are no empty tiles in '{root}'")
+            return False
+
+        # Creating paths
+        image_path = Path(self.root) / self.image_folder
+        mask_path = Path(self.root) / self.mask_folder
+
+        # Getting images and masks
+        images = os.listdir(image_path)
+        masks = os.listdir(mask_path)
+
+        # Checking if number of tiles to remove is larger than number of empty tiles
+        if num_of_tiles > len(empty_tiles):
+            print(f"The number of tiles to remove (= {num_of_tiles}) is larger than the number of empty tiles (= {len(empty_tiles)}). All {len(empty_tiles)} tiles will be removed.")
+            for tile in os.listdir(image_path):
+                os.remove(image_path / tile)
+            for tile in os.listdir(mask_path):
+                os.remove(mask_path / tile)
+            return True
+        else:
+            # Sampling empty tiles
+            tiles_to_remove = sample(empty_tiles, num_of_tiles)
+                
+            # Removing tiles
+            for tile in tiles_to_remove:
+                tile_no_extension = os.path.splitext(tile)[0]
+                tile_png = tile_no_extension + '.png'
+                tile_jpg = tile_no_extension + '.jpg'
+                os.remove(image_path / tile_jpg)
+                os.remove(mask_path / tile_png)
+            return True
+            
+my_dataset = SegmentationDataset(root='tiles', image_folder='Images', mask_folder='Masks')
+num_non_empty_tiles = my_dataset.count_non_empty_tiles()
+num_empty_tiles = my_dataset.count_empty_tiles()
+
+print(f"Non-empty tiles: {num_non_empty_tiles}")
+print(f"Empty tiles: {num_empty_tiles}")
+
+num_to_remove = len(my_dataset) - num_non_empty_tiles
+my_dataset.remove_empty_tiles(num_to_remove)
