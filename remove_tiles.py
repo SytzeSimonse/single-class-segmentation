@@ -1,6 +1,7 @@
 from random import sample
 from pathlib import Path
 import os
+from tqdm import tqdm
 
 def randomly_remove_tiles(root: str, image_folder: str, mask_folder: str, num_of_tiles: int, verbose=True):
     # Creating paths
@@ -73,7 +74,7 @@ def randomly_remove_empty_tiles(root: str, image_folder: str, mask_folder: str, 
         tiles_to_remove = sample(empty_tiles, num_of_tiles)
                
         # Removing tiles
-        for tile in tiles_to_remove:
+        for tile in tqdm(tiles_to_remove, desc="Removing tiles..."):
             tile_no_extension = os.path.splitext(tile)[0]
             tile_png = tile_no_extension + '.png'
             tile_jpg = tile_no_extension + '.jpg'
