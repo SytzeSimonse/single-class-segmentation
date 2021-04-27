@@ -17,7 +17,7 @@ def show_training_results(images_folder: str, output_folder: str, threshold: flo
         img_path = images_folder_path / image
 
         # Reading image
-        img = cv2.imread(img_path)
+        img = cv2.imread(str(img_path))
 
         # Setting channels in right order
         img = img.transpose(2,0,1)
