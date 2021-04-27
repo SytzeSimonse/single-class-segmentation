@@ -28,7 +28,7 @@ def download_tiles(
     if not data_path.exists():
         download_url(
             url=data_url,
-            output_path=data_path
+            output_path=str(data_path)
         )
 
     # Opening file
@@ -69,7 +69,7 @@ class DownloadProgressBar(tqdm):
             self.total = tsize
         self.update(b * bsize - self.n)
 
-def download_url(url, output_path):
+def download_url(url: str, output_path: str):
     # Remove filename from path
     output_folders = output_path.split('/')[:-1]
 
