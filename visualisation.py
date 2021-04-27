@@ -39,7 +39,7 @@ def show_training_results(model, images_folder: str, output_folder: str, thresho
         plt.imshow(
             result, 
             alpha=alpha_val, 
-            cmp=palette)
+            cmap=palette)
 
         # Saving PNG of result in inferences folder
         plt.savefig(output_folder_path / img)
