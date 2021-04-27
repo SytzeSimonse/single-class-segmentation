@@ -54,6 +54,15 @@ def download_tiles(
             f"There are {num_of_images} images, but {num_of_masks}."
         )
 
+def download_weights(weights_url: str, output_folder: str = 'weights'):
+    # Setting up environment
+    output_folder_path = Path(output_folder)
+    if not output_folder_path.exists():
+        os.mkdir(output_folder_path)
+
+    # Downloading data
+    download_url(weights_url, output_folder_path)
+
 class DownloadProgressBar(tqdm):
     def update_to(self, b=1, bsize=1, tsize=None):
         if tsize is not None:
@@ -61,6 +70,17 @@ class DownloadProgressBar(tqdm):
         self.update(b * bsize - self.n)
 
 def download_url(url, output_path):
+    # Remove filename from path
+    output_folders = output_path.split('/')[:-1]
+
+    # Joining the folders (and subfolders)
+    output_folder_path = Path('/'.join(output_folders))
+
+    # Creating folders if not exists
+    if not output_folder_path.exists():
+        os.makedirs(output_folder_path)
+
+    # Downloading data and showing progress bar
     with DownloadProgressBar(unit='B', unit_scale=True, miniters=1, desc=url.split('/')[-1]) as t:
         urllib.request.urlretrieve(
             url, filename=output_path, reporthook=t.update_to
