@@ -70,6 +70,12 @@ class DownloadProgressBar(tqdm):
         self.update(b * bsize - self.n)
 
 def download_url(url: str, output_path: str):
+    # Checking if file is already downloaded
+    if Path(output_path).exists():
+        raise OSError(
+            f"You cannot overwrite '{output_path}'. Remove the current file before running this function again."
+        )
+
     # Remove filename from path
     output_folders = output_path.split('/')[:-1]
 
