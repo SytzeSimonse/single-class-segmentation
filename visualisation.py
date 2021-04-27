@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import torch
 
-def show_training_results(model: torch.nn.Module, images_folder: str, output_folder: str, threshold: float = 0.2, alpha_val: float = 0.4, palette: str = 'RdYlBu'):
+def show_training_results(model, images_folder: str, output_folder: str, threshold: float = 0.2, alpha_val: float = 0.4, palette: str = 'RdYlBu'):
     # Creating paths
     images_folder_path = Path(images_folder)
     output_folder_path = Path(output_folder)
