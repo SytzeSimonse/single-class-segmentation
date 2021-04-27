@@ -10,7 +10,7 @@ def show_training_results(model, images_folder: str, output_folder: str, thresho
     output_folder_path = Path(output_folder)
 
     # Creating folder for output
-    if not output_folder_path.exits():
+    if not output_folder_path.exists():
         os.mkdir(output_folder_path)
     
     # Getting list of images
