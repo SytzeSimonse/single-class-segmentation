@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import torch
 
-def show_training_results(model, images_folder: str, output_folder: str, threshold: float = 0.2, alpha_val: float = 0.4, palette: str = 'RdYlBu'):
+def show_training_results(model, images_folder: str, output_folder: str, threshold: float = 0.2, alpha_val: float = 0.4, palette: str = 'RdYlBu', dpi: int = 100):
     # Creating paths
     images_folder_path = Path(images_folder)
     output_folder_path = Path(output_folder)
@@ -28,6 +28,9 @@ def show_training_results(model, images_folder: str, output_folder: str, thresho
 
         # Reshaping (opposite of ravel)
         img = img.reshape(1, 3, 512, 512)
+
+        # Setting figure size
+        plt.figsize=((512 / dpi, 512 / dpi), dpi=dpi)
 
         # Displaying image
         plt.imshow(img[0,...].transpose(1,2,0))
