@@ -27,6 +27,12 @@ def tile_ortomosaic(ortomosaic_fname: str, output_folder: str, tile_size: int = 
     # Creating folder for output
     os.mkdir(output_folder_path)
 
+    # Checking if ortomosaic exists
+    if not ortomosaic_file_path.exists():
+        assert IOError(
+            f"The file '{str(ortomosaic_file_path)} does not exist."
+        )
+
     # Opening ortomosaic
     ortomosaic = gdal.Open(str(ortomosaic_file_path))
 
