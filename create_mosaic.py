@@ -8,7 +8,7 @@ import numpy as np
 from tqdm import tqdm # progress bar
 import rasterio as rs
 
-def tile_ortmosaic(ortomosaic_fname: str, output_folder: str, tile_size: int = 512):
+def tile_ortomosaic(ortomosaic_fname: str, output_folder: str, tile_size: int = 512):
     """Splits ortomosaic into smaller tiles.    
 
     Args:
@@ -185,3 +185,4 @@ def make_inferences(tiles_folder: str, output_folder: str, inference_function):
                 with rs.open(inference_fname, 'w', **profile) as dst:
                     dst.write(inference.astype(rs.uint8), 1)
 
+# tile_ortomosaic("example.tif", "tiled")
