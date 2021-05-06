@@ -3,3 +3,6 @@ tiles/
 .vscode/
 __pycache__/
 test_remove/
+
+*.tif
+*.tif.aux.xml
