@@ -8,7 +8,7 @@ import numpy as np
 from tqdm import tqdm # progress bar
 import rasterio as rs
 
-def tile_ortomosaic(ortomosaic_fname: str, output_folder: str, tile_size: int = 512):
+def tile_ortomosaic(ortomosaic_fname: str, output_folder: str, tile_size: int = 512, overwrite: bool = False):
     """Splits ortomosaic into smaller tiles.    
 
     Args:
@@ -21,8 +21,12 @@ def tile_ortomosaic(ortomosaic_fname: str, output_folder: str, tile_size: int = 
     output_folder_path = Path(output_folder)
 
     # Removing output folder (if already exists)
-    if output_folder_path.exists():
+    if output_folder_path.exists() and overwrite:
         shutil.rmtree(output_folder_path)
+
+    # Printing message if output folder exists, but should not be overwritten    
+    if output_folder_path.exists() and not overwrite:
+        print(f"The folder {str(output_folder_path)} already exists and will not be overwritten.")
     
     # Creating folder for output
     os.mkdir(output_folder_path)
