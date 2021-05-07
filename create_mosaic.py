@@ -136,7 +136,7 @@ def calculate_VI(img_path):
 
     return result
 
-def make_inferences(tiles_folder: str, output_folder: str, inference_function):
+def make_inferences(tiles_folder: str, output_folder: str, inference_function, verbose: bool = False):
     # Creating path for output folder
     output_folder_path = Path(output_folder)
     tiles_folder_path = Path(tiles_folder)
@@ -160,6 +160,10 @@ def make_inferences(tiles_folder: str, output_folder: str, inference_function):
         if tile.endswith(".tif"):
             # Creating full path to tile
             tile_path = tiles_folder_path / tile
+
+            # Print filename
+            if verbose:
+                print(tile_path)
 
             # Opening tile with RasterIO
             tile_dest = rs.open(tile_path)
@@ -190,5 +194,3 @@ def make_inferences(tiles_folder: str, output_folder: str, inference_function):
                 # Storing .tif image in original CRS
                 with rs.open(inference_fname, 'w', **profile) as dst:
                     dst.write(inference.astype(rs.uint8), 1)
-
-# tile_ortomosaic("example.tif", "tiled")
