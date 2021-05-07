@@ -23,13 +23,13 @@ def tile_ortomosaic(ortomosaic_fname: str, output_folder: str, tile_size: int = 
     # Removing output folder (if already exists)
     if output_folder_path.exists() and overwrite:
         shutil.rmtree(output_folder_path)
-
+        # Creating folder for output
+        os.mkdir(output_folder_path)
     # Printing message if output folder exists, but should not be overwritten    
-    if output_folder_path.exists() and not overwrite:
+    elif output_folder_path.exists() and not overwrite:
         print(f"The folder {str(output_folder_path)} already exists and will not be overwritten.")
-    
-    # Creating folder for output
-    os.mkdir(output_folder_path)
+    else:
+        os.mkdir(output_folder_path)
 
     # Checking if ortomosaic exists
     if not ortomosaic_file_path.exists():
