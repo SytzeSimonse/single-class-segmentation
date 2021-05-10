@@ -192,9 +192,9 @@ def make_inferences(tiles_folder: str, output_folder: str, inference_function, v
                 # dtype to uint8, and specify LZW compression.
                 profile.update(
                     nodata=0,
-                    dtype=rs.ubyte,
+                    dtype=rs.uint16,
                     count=1,
-                    compress='RLE')
+                    compress='LZW')
 
                 # Storing .tif image in original CRS
                 with rs.open(inference_fname, 'w', **profile) as dst:
