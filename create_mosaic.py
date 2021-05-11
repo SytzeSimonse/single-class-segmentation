@@ -193,8 +193,9 @@ def make_inferences(tiles_folder: str, output_folder: str, inference_function, v
                 profile.update(
                     nodata=0,
                     #dtype=rs.uint16,
-                    count=1)
-                    #compress='LZW')
+                    nbits=1,
+                    count=1,
+                    compress='JPEG')
 
                 # Storing .tif image in original CRS
                 with rs.open(inference_fname, 'w', **profile) as dst:
