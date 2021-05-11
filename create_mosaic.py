@@ -124,23 +124,7 @@ def files_to_txt_list(input_folder: str, output_name: str = "tif_files.txt"):
             if file.endswith(".tif"):
                 f.write(f"{input_folder}/{file}\n")
 
-def calculate_VI(img_path):
-    np.seterr(divide='ignore', invalid='ignore')
-
-    img = Image.open(img_path)
-    img = np.array(img)
-
-    R = img[:,:,0] 
-    G = img[:,:,1] 
-    B = img[:,:,2] 
-
-    result = G
-    result[G<200] = 0
-    result[G>=200] = 255
-
-    return result
-
-def make_inferences(tiles_folder: str, output_folder: str, inference_function, verbose: bool = False):
+def make_inferences(tiles_folder: str, output_folder: str, inference_function, vegetation_index: int = 0, verbose: bool = False):
     # Creating path for output folder
     output_folder_path = Path(output_folder)
     tiles_folder_path = Path(tiles_folder)
@@ -173,12 +157,7 @@ def make_inferences(tiles_folder: str, output_folder: str, inference_function, v
             tile_dest = rs.open(tile_path)
 
             # Making inference
-            img = Image.open(tile_path)
-            img = np.array(img)
-
-            inference = inference_function(img)
-
-            print("Unique values:", np.unique(inference))
+            inference = inference_function(tile_path)
 
             # Saving name
             inference_fname = output_folder_path / tile
