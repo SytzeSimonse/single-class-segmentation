@@ -178,6 +178,8 @@ def make_inferences(tiles_folder: str, output_folder: str, inference_function, v
 
             inference = inference_function(img)
 
+            print("Unique values:", np.unique(inference))
+
             # Saving name
             inference_fname = output_folder_path / tile
 
