@@ -6,6 +6,7 @@ from segmentation_dataset import SegmentationDataset
 def create_dataloader(
     root: str = 'Tiles', 
     images_folder_name: str = 'Images',
+    image_color_mode: str = "rgb",
     masks_folder_name: str = 'Masks',
     seed: int = 100,
     fraction: float = 0.2,
@@ -38,7 +39,7 @@ def create_dataloader(
                 # Converting to tensors by default
                 transform=transforms.ToTensor(), 
                 target_transform=transforms.ToTensor(),
-                image_color_mode='rgb',
+                image_color_mode=image_color_mode,
                 mask_color_mode='grayscale'
                 )
 
