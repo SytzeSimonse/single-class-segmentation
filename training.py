@@ -85,7 +85,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results
                         if name in ['f1_score', 'precision_score', 'recall_score']:
                             # Use a classification threshold of 0.1
                             batchsummary[f'{phase}_{name}'].append(
-                                metric(y_true > 0, y_pred > 0.1))
+                                metric(y_true > 0, y_pred > 0.4))
                         else:
                             batchsummary[f'{phase}_{name}'].append(
                                 metric(y_true.astype('uint8'), y_pred))
