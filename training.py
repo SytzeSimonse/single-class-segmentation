@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import matplotlib.pyplot as plt
 
-def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results_path, num_epochs) -> torch.nn.Module:
+def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results_path, num_epochs, metric_threshold: float = 0.1) -> torch.nn.Module:
     """Trains PyTorch model.
 
     Args:
@@ -85,7 +85,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results
                         if name in ['f1_score', 'precision_score', 'recall_score']:
                             # Use a classification threshold of 0.1
                             batchsummary[f'{phase}_{name}'].append(
-                                metric(y_true > 0, y_pred > 0.4))
+                                metric(y_true > 0, y_pred > metric_threshold))
                         else:
                             batchsummary[f'{phase}_{name}'].append(
                                 metric(y_true.astype('uint8'), y_pred))
