@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Callable, Optional
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageCms
 
 from torchvision.datasets.vision import VisionDataset
 
@@ -132,7 +132,16 @@ class SegmentationDataset(VisionDataset):
             elif self.image_color_mode == "hsv":
                 image = image.convert("HSV")
             elif self.image_color_mode == "lab":
-                image = image.convert("LAB")
+                ## Converting to LAB colour space requires a few extra steps...
+                image = image.convert("RGB")
+
+                # Convert to Lab colourspace
+                srgb_p = ImageCms.createProfile("sRGB")
+                lab_p  = ImageCms.createProfile("LAB")
+
+                rgb2lab = ImageCms.buildTransformFromOpenProfiles(srgb_p, lab_p, "RGB", "LAB")
+
+                image = ImageCms.applyTransform(image, rgb2lab)
             elif self.image_color_mode == "grayscale":
                 image = image.convert("L")
 
