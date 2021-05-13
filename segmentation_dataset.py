@@ -24,7 +24,7 @@ class SegmentationDataset(VisionDataset):
         subset (str, optional): 'Train' or 'Test' to select the appropriate set. Defaults to None.
         transform (Optional[Callable], optional): A function/transform for the image.
         target_transform (Optional[Callable], optional): A function/transform for the mask.
-        image_color_mode (str, optional): 'rgb', 'hsv', 'lab' or 'grayscale'. Defaults to 'rgb'.
+        image_color_mode (str, optional): 'rgb', 'hsv', 'lab', 'ycbcr' or 'grayscale'. Defaults to 'rgb'.
         mask_color_mode (str, optional): 'rgb' or 'grayscale'. Defaults to 'grayscale'.
         data_augmentation: (bool): Apply data augmentation. Defaults to False.
     
@@ -70,7 +70,7 @@ class SegmentationDataset(VisionDataset):
             raise OSError(f"{mask_folder_path} does not exist.")
 
         # Raising errors if selected color mode is invalid
-        if image_color_mode not in ["rgb", "grayscale", "hsv", "lab"]:
+        if image_color_mode not in ["rgb", "grayscale", "hsv", "lab", "ycbcr"]:
             raise ValueError(
                 f"{image_color_mode} is an invalid choice. Please enter from rgb grayscale."
             )
@@ -142,6 +142,8 @@ class SegmentationDataset(VisionDataset):
                 rgb2lab = ImageCms.buildTransformFromOpenProfiles(srgb_p, lab_p, "RGB", "LAB")
 
                 image = ImageCms.applyTransform(image, rgb2lab)
+            elif self.image_color_mode == "ycbcr":
+                image = image.convert("YCbCr")
             elif self.image_color_mode == "grayscale":
                 image = image.convert("L")
 
