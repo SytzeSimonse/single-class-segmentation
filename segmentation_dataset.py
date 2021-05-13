@@ -24,9 +24,8 @@ class SegmentationDataset(VisionDataset):
         subset (str, optional): 'Train' or 'Test' to select the appropriate set. Defaults to None.
         transform (Optional[Callable], optional): A function/transform for the image.
         target_transform (Optional[Callable], optional): A function/transform for the mask.
-        image_color_mode (str, optional): 'rgb' or 'grayscale'. Defaults to 'rgb'.
+        image_color_mode (str, optional): 'rgb', 'hsv', 'lab' or 'grayscale'. Defaults to 'rgb'.
         mask_color_mode (str, optional): 'rgb' or 'grayscale'. Defaults to 'grayscale'.
-        image_color_space (str, optional): 'rgb' or 'hsv'.
         data_augmentation: (bool): Apply data augmentation. Defaults to False.
     
     Raises:
@@ -71,7 +70,7 @@ class SegmentationDataset(VisionDataset):
             raise OSError(f"{mask_folder_path} does not exist.")
 
         # Raising errors if selected color mode is invalid
-        if image_color_mode not in ["rgb", "grayscale", "hsv"]:
+        if image_color_mode not in ["rgb", "grayscale", "hsv", "lab"]:
             raise ValueError(
                 f"{image_color_mode} is an invalid choice. Please enter from rgb grayscale."
             )
@@ -130,10 +129,12 @@ class SegmentationDataset(VisionDataset):
 
             if self.image_color_mode == "rgb":
                 image = image.convert("RGB")
-            elif self.image_color_mode == "grayscale":
-                image = image.convert("L")
             elif self.image_color_mode == "hsv":
                 image = image.convert("HSV")
+            elif self.image_color_mode == "lab":
+                image = image.convert("LAB")
+            elif self.image_color_mode == "grayscale":
+                image = image.convert("L")
 
             # Opening mask
             mask = Image.open(mask_file)
