@@ -124,7 +124,65 @@ def files_to_txt_list(input_folder: str, output_name: str = "tif_files.txt"):
             if file.endswith(".tif"):
                 f.write(f"{input_folder}/{file}\n")
 
-def make_inferences(tiles_folder: str, output_folder: str, inference_function, vegetation_index: int = 0, verbose: bool = False):
+# def make_inferences(tiles_folder: str, output_folder: str, inference_function, vegetation_index: int = 0, verbose: bool = False):
+#     # Creating path for output folder
+#     output_folder_path = Path(output_folder)
+#     tiles_folder_path = Path(tiles_folder)
+
+#     # Checking if tiles folder exists
+#     if not tiles_folder_path.exists():
+#         raise IOError(
+#             f"{tiles_folder} does not exist."
+#         )
+
+#     # Creating folder for output
+#     if not output_folder_path.exists():
+#         os.mkdir(output_folder_path)
+
+#     # Getting all tiles
+#     tiles = os.listdir(tiles_folder)
+    
+#     # Looping through tiles
+#     for tile in tiles:
+#         # Checking if tile ends with .tif (and not .aux.xml)
+#         if tile.endswith(".tif"):
+#             # Creating full path to tile
+#             tile_path = tiles_folder_path / tile
+
+#             # Print filename
+#             if verbose:
+#                 print(tile_path)
+
+#             # Opening tile with RasterIO
+#             tile_dest = rs.open(tile_path)
+
+#             # Making inference
+#             inference = inference_function(tile_path)
+
+#             # Saving name
+#             inference_fname = output_folder_path / tile
+
+#             # Register GDAL format drivers and configuration options with a
+#             # context manager.
+#             with rs.Env():
+#                 # Write an array as a raster band to a new 8-bit file. For
+#                 # the new file's profile, we start with the profile of the source
+#                 profile = tile_dest.profile
+
+#                 # And then change the band count to 1, set the
+#                 # dtype to uint8, and specify LZW compression.
+#                 profile.update(
+#                     nodata=0,
+#                     dtype=rs.uint8,
+#                     count=1,
+#                     jpeg_quality=100,
+#                     compress='JPEG')
+
+#                 # Storing .tif image in original CRS
+#                 with rs.open(inference_fname, 'w', **profile) as dst:
+#                     dst.write(inference.astype(rs.uint8), 1)
+
+def make_inference(tiles_folder: str, output_folder: str, inference_function, verbose: bool = False):
     # Creating path for output folder
     output_folder_path = Path(output_folder)
     tiles_folder_path = Path(tiles_folder)
@@ -148,36 +206,26 @@ def make_inferences(tiles_folder: str, output_folder: str, inference_function, v
         if tile.endswith(".tif"):
             # Creating full path to tile
             tile_path = tiles_folder_path / tile
+    
+            # if you just need an array I suggest you do everything with rasterio
+            # build the image and get the initial profile
+            with rs.open(tile_path) as f:
+                img = f.read()
+                inference = inference_function(img) # to comment if you prefer using PIL
+                
+                profile = f.profile
+                
+            # write the new image file with an updated profil 
+            inference_f = output_folder_path / tile 
+            profile.update(nodata=0, count=1)
 
-            # Print filename
-            if verbose:
-                print(tile_path)
+            with rs.open(inference_f, 'w', **profile) as dst:
+                # create the array to be written
+                print(np.unique(inference)) # to make sure that only 0 and 1 exist in your array
+                inference = inference.astype(np.uint8)
+                print(np.unique(inference)) # to check that the problem is effectively coming from recasting
 
-            # Opening tile with RasterIO
-            tile_dest = rs.open(tile_path)
+                # clip the array to the values you want to use 
+                inference = np.clip(inference, 0, 1)
 
-            # Making inference
-            inference = inference_function(tile_path)
-
-            # Saving name
-            inference_fname = output_folder_path / tile
-
-            # Register GDAL format drivers and configuration options with a
-            # context manager.
-            with rs.Env():
-                # Write an array as a raster band to a new 8-bit file. For
-                # the new file's profile, we start with the profile of the source
-                profile = tile_dest.profile
-
-                # And then change the band count to 1, set the
-                # dtype to uint8, and specify LZW compression.
-                profile.update(
-                    nodata=0,
-                    dtype=rs.uint8,
-                    count=1,
-                    jpeg_quality=100,
-                    compress='JPEG')
-
-                # Storing .tif image in original CRS
-                with rs.open(inference_fname, 'w', **profile) as dst:
-                    dst.write(inference.astype(rs.uint8), 1)
+                dst.write(inference, 1)
