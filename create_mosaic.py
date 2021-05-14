@@ -182,7 +182,7 @@ def files_to_txt_list(input_folder: str, output_name: str = "tif_files.txt"):
 #                 with rs.open(inference_fname, 'w', **profile) as dst:
 #                     dst.write(inference.astype(rs.uint8), 1)
 
-def make_inference(tiles_folder: str, output_folder: str, inference_function, verbose: bool = False):
+def make_inferences(tiles_folder: str, output_folder: str, inference_function, verbose: bool = False):
     # Creating path for output folder
     output_folder_path = Path(output_folder)
     tiles_folder_path = Path(tiles_folder)
