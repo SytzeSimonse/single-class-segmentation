@@ -70,13 +70,15 @@ class SegmentationDataset(VisionDataset):
             raise OSError(f"{mask_folder_path} does not exist.")
 
         # Raising errors if selected color mode is invalid
-        if image_color_mode not in ["rgb", "grayscale", "hsv", "lab", "ycbcr"]:
+        available_image_color_modes = ["rgb", "grayscale", "hsv", "lab", "ycbcr", "rgb-hsv"]
+        if image_color_mode not in available_image_color_modes:
             raise ValueError(
-                f"{image_color_mode} is an invalid choice. Please enter from rgb grayscale."
+                f"{image_color_mode} is an invalid choice. Please choose from the following modes: {', '.join(str(mode) for mode in available_image_color_modes)}."
             )
-        if mask_color_mode not in ["rgb", "grayscale"]:
+        available_mask_color_modes = ["rgb", "grayscale"]
+        if mask_color_mode not in available_mask_color_modes:
             raise ValueError(
-                f"{mask_color_mode} is an invalid choice. Please enter from rgb grayscale."
+                f"{mask_color_mode} is an invalid choice. Please choose from the following modes: {', '.join(str(mode) for mode in available_mask_color_modes)}."
             )
 
         # Initiating color modes for image and mask
@@ -146,6 +148,14 @@ class SegmentationDataset(VisionDataset):
                 image = image.convert("YCbCr")
             elif self.image_color_mode == "grayscale":
                 image = image.convert("L")
+            elif self.image_color_mode == "rgb-hsv":
+                image_rgb = image.convert("RGB")
+                image_hsv = image.convert("HSV")
+                image_rgb_array = np.array(image_rgb)
+                image_hsv_array = np.array(image_hsv)
+
+                # Combining ('stacking') the arrays
+                image = np.dstack((image_rgb_array, image_hsv_array))
 
             # Opening mask
             mask = Image.open(mask_file)
@@ -276,3 +286,9 @@ class SegmentationDataset(VisionDataset):
                 os.remove(mask_path / tile_png)
             return True
             
+# my_dataset = SegmentationDataset("tiles", image_color_mode="rgb-hsv")
+# print(my_dataset[0])
+
+# from matplotlib import pyplot as plt
+# plt.imshow(my_dataset[0]['image'][:,:,3:6], interpolation='nearest')
+# plt.show()
