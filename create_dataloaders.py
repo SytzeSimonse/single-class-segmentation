@@ -3,6 +3,9 @@ from torchvision import transforms, utils
 
 from segmentation_dataset import SegmentationDataset
 
+import numpy as np
+from normalisation import calculate_RGB_images_statistic
+
 def create_dataloader(
     root: str = 'Tiles', 
     images_folder_name: str = 'Images',
@@ -27,6 +30,9 @@ def create_dataloader(
     Returns:
         dict: Dataloaders for training and test phase.
     """
+    normalised_avg = calculate_RGB_images_statistic(root, np.mean)
+    normalised_std = calculate_RGB_images_statistic(root, np.std)
+
     # Creating the dataloader
     image_datasets = {
             phase: SegmentationDataset(
@@ -37,7 +43,10 @@ def create_dataloader(
                 fraction=fraction,
                 subset=phase,
                 # Converting to tensors by default
-                transform=transforms.ToTensor(), 
+                transform=transforms.Compose([
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=normalised_avg, std=normalised_std),
+                ]), 
                 target_transform=transforms.ToTensor(),
                 image_color_mode=image_color_mode,
                 mask_color_mode='grayscale'
