@@ -31,7 +31,7 @@ def create_dataloader(
         dict: Dataloaders for training and test phase.
     """
     normalised_avg = calculate_RGB_images_statistic("tiles/Images", np.mean)
-    normalised_std = calculate_RGB_images_statistic("tiles/Masks", np.std)
+    normalised_std = calculate_RGB_images_statistic("tiles/Images", np.std)
 
     # Creating the dataloader
     image_datasets = {
