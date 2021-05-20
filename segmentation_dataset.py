@@ -10,7 +10,7 @@ from PIL import Image, ImageCms
 
 from torchvision.datasets.vision import VisionDataset
 
-from transformation_functions import transform
+from transformation_functions import transform, random_rotation, random_crop, random_brightness, random_contrast
 
 class SegmentationDataset(VisionDataset):
     """[summary]
