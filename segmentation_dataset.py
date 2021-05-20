@@ -10,7 +10,7 @@ from PIL import Image, ImageCms
 
 from torchvision.datasets.vision import VisionDataset
 
-import transformation_functions
+from transformation_functions import transform
 
 class SegmentationDataset(VisionDataset):
     """[summary]
@@ -26,7 +26,7 @@ class SegmentationDataset(VisionDataset):
         target_transform (Optional[Callable], optional): A function/transform for the mask.
         image_color_mode (str, optional): 'rgb', 'hsv', 'lab', 'ycbcr' or 'grayscale'. Defaults to 'rgb'.
         mask_color_mode (str, optional): 'rgb' or 'grayscale'. Defaults to 'grayscale'.
-        data_augmentation: (bool): Apply data augmentation. Defaults to False.
+        data_augmentation: (bool): Apply data augmentation. Defaults to True.
     
     Raises:
         OSError: If image folder doesn't exist in root.
@@ -45,7 +45,7 @@ class SegmentationDataset(VisionDataset):
         target_transform: Optional[Callable] = None,
         image_color_mode: str = 'rgb',
         mask_color_mode: str = 'grayscale',
-        data_augmentation: bool = False) -> None:
+        data_augmentation: bool = True) -> None:
 
         # Initializing the base class (i.e. VisionDataset)
         super().__init__(root)
@@ -170,6 +170,7 @@ class SegmentationDataset(VisionDataset):
 
             # Applying data augmentation
             if self.data_augmentation and self.subset == "Train":
+                print("Transforming the sample...")
                 sample = transform(sample, transformation_functions = [
                   random_rotation,
                   random_brightness,
