@@ -30,8 +30,8 @@ def create_dataloader(
     Returns:
         dict: Dataloaders for training and test phase.
     """
-    normalised_avg = calculate_RGB_images_statistic(root, np.mean)
-    normalised_std = calculate_RGB_images_statistic(root, np.std)
+    normalised_avg = calculate_RGB_images_statistic(images_folder_name, np.mean)
+    normalised_std = calculate_RGB_images_statistic(masks_folder_name, np.std)
 
     # Creating the dataloader
     image_datasets = {
