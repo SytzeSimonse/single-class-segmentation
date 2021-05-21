@@ -82,7 +82,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results
                     y_true = masks.data.cpu().numpy().ravel()
 
                     for name, metric in metrics.items():
-                        if name in ['f1_score', 'precision_score', 'recall_score']:
+                        if name in ['f1_score', 'jaccard_score', 'precision_score', 'recall_score']:
                             # Use a classification threshold of 0.1
                             batchsummary[f'{phase}_{name}'].append(
                                 metric(y_true > 0, y_pred > metric_threshold))

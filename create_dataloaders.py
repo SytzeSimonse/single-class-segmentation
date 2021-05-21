@@ -30,9 +30,6 @@ def create_dataloader(
     Returns:
         dict: Dataloaders for training and test phase.
     """
-    normalised_avg = calculate_RGB_images_statistic("tiles/Images", np.mean)
-    normalised_std = calculate_RGB_images_statistic("tiles/Images", np.std)
-
     # Creating the dataloader
     image_datasets = {
             phase: SegmentationDataset(
@@ -43,10 +40,7 @@ def create_dataloader(
                 fraction=fraction,
                 subset=phase,
                 # Converting to tensors by default
-                transform=transforms.Compose([
-                    transforms.ToTensor(),
-                    transforms.Normalize(mean=normalised_avg, std=normalised_std),
-                ]), 
+                transform=transforms.ToTensor(),
                 target_transform=transforms.ToTensor(),
                 image_color_mode=image_color_mode,
                 mask_color_mode='grayscale'
