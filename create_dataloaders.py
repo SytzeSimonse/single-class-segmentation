@@ -14,7 +14,8 @@ def create_dataloader(
     seed: int = 100,
     fraction: float = 0.2,
     batch_size: int = 8,
-    workers: int = 2 
+    workers: int = 2,
+    data_augmentation: bool = True 
     ) -> dict:
     """Creates dataloaders for training and test phase.
 
@@ -43,7 +44,8 @@ def create_dataloader(
                 transform=transforms.ToTensor(),
                 target_transform=transforms.ToTensor(),
                 image_color_mode=image_color_mode,
-                mask_color_mode='grayscale'
+                mask_color_mode='grayscale',
+                data_augmentation=data_augmentation
                 )
 
             for phase in ['Train', 'Test']
