@@ -24,7 +24,7 @@ class SegmentationDataset(VisionDataset):
         subset (str, optional): 'Train' or 'Test' to select the appropriate set. Defaults to None.
         transform (Optional[Callable], optional): A function/transform for the image.
         target_transform (Optional[Callable], optional): A function/transform for the mask.
-        image_color_mode (str, optional): 'rgb', 'hsv', 'lab', 'ycbcr' or 'grayscale'. Defaults to 'rgb'.
+        image_color_mode (str, optional): 'rgb', 'hsv', 'lab', 'ycbcr', 'rgb-hsv' or 'grayscale'. Defaults to 'rgb'.
         mask_color_mode (str, optional): 'rgb' or 'grayscale'. Defaults to 'grayscale'.
         data_augmentation: (bool): Apply data augmentation. Defaults to True.
     
@@ -70,7 +70,7 @@ class SegmentationDataset(VisionDataset):
             raise OSError(f"{mask_folder_path} does not exist.")
 
         # Raising errors if selected color mode is invalid
-        available_image_color_modes = ["rgb", "grayscale", "hsv", "lab", "ycbcr", "rgb-hsv"]
+        available_image_color_modes = ["rgb", "grayscale", "hsv", "lab", "ycbcr", "rgb-hsv", "rgb-lab"]
         if image_color_mode not in available_image_color_modes:
             raise ValueError(
                 f"{image_color_mode} is an invalid choice. Please choose from the following modes: {', '.join(str(mode) for mode in available_image_color_modes)}."
@@ -156,6 +156,24 @@ class SegmentationDataset(VisionDataset):
 
                 # Combining ('stacking') the arrays
                 image = np.dstack((image_rgb_array, image_hsv_array))
+            elif self.image_color_mode == "rgb-lab":
+                ## Converting to LAB colour space requires a few extra steps...
+                image_rgb = image.convert("RGB")
+
+                # Convert to Lab colourspace
+                srgb_p = ImageCms.createProfile("sRGB")
+                lab_p  = ImageCms.createProfile("LAB")
+
+                rgb2lab = ImageCms.buildTransformFromOpenProfiles(srgb_p, lab_p, "RGB", "LAB")
+
+                image_lab = ImageCms.applyTransform(image_rgb, rgb2lab)
+
+                # Creating NumPy arrays
+                image_rgb_array = np.array(image_rgb)
+                image_lab_array = np.array(image_lab)
+
+                # Combining ('stacking') the arrays
+                image = np.dstack((image_rgb_array, image_lab_array))
 
             # Opening mask
             mask = Image.open(mask_file)
@@ -254,7 +272,7 @@ class SegmentationDataset(VisionDataset):
         empty_tiles = self.get_empty_tiles()
 
         if len(empty_tiles) == 0:
-            print(f"There are no empty tiles in '{root}'")
+            print(f"There are no empty tiles in '{self.root}'")
             return False
 
         # Creating paths
