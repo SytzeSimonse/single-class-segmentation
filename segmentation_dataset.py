@@ -70,7 +70,7 @@ class SegmentationDataset(VisionDataset):
             raise OSError(f"{mask_folder_path} does not exist.")
 
         # Raising errors if selected color mode is invalid
-        available_image_color_modes = ["rgb", "grayscale", "hsv", "lab", "ycbcr", "rgb-hsv", "rgb-lab"]
+        available_image_color_modes = ["rgb", "grayscale", "hsv", "lab", "ycbcr", "rgb-hsv", "rgb-lab", "rgb-ycbcr"]
         if image_color_mode not in available_image_color_modes:
             raise ValueError(
                 f"{image_color_mode} is an invalid choice. Please choose from the following modes: {', '.join(str(mode) for mode in available_image_color_modes)}."
@@ -174,6 +174,14 @@ class SegmentationDataset(VisionDataset):
 
                 # Combining ('stacking') the arrays
                 image = np.dstack((image_rgb_array, image_lab_array))
+            elif self.image_color_mode == "rgb-ycbcr":
+                image_rgb = image.convert("RGB")
+                image_ycbcr = image.convert("YCbCr")
+                image_rgb_array = np.array(image_rgb)
+                image_ycbcr_array = np.array(image_ycbcr)
+
+                # Combining ('stacking') the arrays
+                image = np.dstack((image_rgb_array, image_ycbcr_array))
 
             # Opening mask
             mask = Image.open(mask_file)
