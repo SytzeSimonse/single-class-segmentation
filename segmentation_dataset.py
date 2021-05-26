@@ -199,7 +199,7 @@ class SegmentationDataset(VisionDataset):
                 sample = transform(sample, transformation_functions = [
                   random_rotation,
                   random_brightness,
-                  #random_contrast
+                  random_contrast,
                   random_crop                                            
                 ])
             
