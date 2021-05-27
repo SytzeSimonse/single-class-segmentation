@@ -26,8 +26,9 @@ def random_rotation(sample):
             sample['mask'] = sample['mask'].rotate(degrees)
 
             sample['image'] = np.dstack((sample_img_A, sample_img_B))
-        sample['image'] = Image.fromarray(sample['image']).rotate(degrees)
-        sample['mask'] = Image.fromarray(sample['mask']).rotate(degrees)
+        else:
+            sample['image'] = Image.fromarray(sample['image']).rotate(degrees)
+            sample['mask'] = Image.fromarray(sample['mask']).rotate(degrees)
     else:
         # Applying rotation
         sample['image'] = sample['image'].rotate(degrees)
