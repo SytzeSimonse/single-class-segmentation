@@ -16,7 +16,7 @@ def random_rotation(sample):
     degrees = random.randint(0, 360)
 
     # Checking if these are NumPy arrays instead of PIL images
-    if type(sample['image']) == np.array():
+    if isinstance(sample['image'], np.ndarray):
         sample['image'] = Image.fromarray(sample['image'])
         sample['mask'] = Image.fromarray(sample['mask'])
 
