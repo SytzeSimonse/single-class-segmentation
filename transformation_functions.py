@@ -1,5 +1,6 @@
 import random
 from PIL import Image, ImageEnhance
+import numpy as np
 
 # NOTE: This function changes both the mask and image.
 def random_rotation(sample):
@@ -13,6 +14,11 @@ def random_rotation(sample):
     """
     # Selecting random number of degrees
     degrees = random.randint(0, 360)
+
+    # Checking if these are NumPy arrays instead of PIL images
+    if type(sample['image']) == np.array():
+        sample['image'] = Image.fromarray(sample['image'])
+        sample['mask'] = Image.fromarray(sample['mask'])
 
     # Applying rotation
     sample['image'] = sample['image'].rotate(degrees)

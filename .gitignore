@@ -1,5 +1,6 @@
 data/
 tiles/
+tiles_augmented/
 .vscode/
 __pycache__/
 test_remove/
