@@ -15,29 +15,29 @@ def random_rotation(sample):
     # Selecting random number of degrees
     degrees = random.randint(0, 360)
 
-    # Checking if these are NumPy arrays instead of PIL images
-    if isinstance(sample['image'], np.ndarray):
-        print(f"Number of dimensions: {sample['image'].ndim}")
-        # Checking if we are dealing with more than 3 channels (i.e. combined colour space)
-        if sample['image'].ndim > 3:
-            sample_img_A = Image.fromarray(sample['image'][:,:,0:2]).rotate(degrees)
-            sample_img_B = Image.fromarray(sample['image'][:,:,3:5]).rotate(degrees)
+    # # Checking if these are NumPy arrays instead of PIL images
+    # if isinstance(sample['image'], np.ndarray):
+    #     print(f"Number of dimensions: {sample['image'].ndim}")
+    #     # Checking if we are dealing with more than 3 channels (i.e. combined colour space)
+    #     if sample['image'].ndim > 3:
+    #         sample_img_A = Image.fromarray(sample['image'][:,:,0:2]).rotate(degrees)
+    #         sample_img_B = Image.fromarray(sample['image'][:,:,3:5]).rotate(degrees)
 
-            # Only rotate mask (image has already been rotated)
-            sample['mask'] = sample['mask'].rotate(degrees)
+    #         # Only rotate mask (image has already been rotated)
+    #         sample['mask'] = sample['mask'].rotate(degrees)
 
-            sample['image'] = np.dstack((sample_img_A, sample_img_B))
-        elif sample['image'].ndim == 3:
-            sample['image'] = Image.fromarray(sample['image']).rotate(degrees)
-            sample['mask'] = Image.fromarray(sample['mask']).rotate(degrees)
-        else:
-            raise ValueError(
-                f"The image should have at least 3 channels, found only {sample['image'].ndim}."
-            )
-    else:
-        # Applying rotation
-        sample['image'] = sample['image'].rotate(degrees)
-        sample['mask'] = sample['mask'].rotate(degrees)
+    #         sample['image'] = np.dstack((sample_img_A, sample_img_B))
+    #     elif sample['image'].ndim == 3:
+    #         sample['image'] = Image.fromarray(sample['image']).rotate(degrees)
+    #         sample['mask'] = Image.fromarray(sample['mask']).rotate(degrees)
+    #     else:
+    #         raise ValueError(
+    #             f"The image should have at least 3 channels, found only {sample['image'].ndim}."
+    #         )
+    # else:
+    #     # Applying rotation
+    sample['image'] = sample['image'].rotate(degrees)
+    sample['mask'] = sample['mask'].rotate(degrees)
 
     return sample
 
