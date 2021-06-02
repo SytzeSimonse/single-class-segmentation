@@ -114,7 +114,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results
                 print(f"The F1-score has been improved with {f1_score - best_f1_score}.")
                 best_f1_score = f1_score
                 best_model_wts = copy.deepcopy(model.state_dict())
-                torch.save(model.state_dict(), "results/weights.pth")
+                torch.save(model.state_dict(), f"results/weights_epoch-{batchsummary['epoch']}.pth")
             # deep copy the model (for best performance)
             #if phase == 'Test' and loss < best_loss:
             #    best_loss = loss
