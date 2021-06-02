@@ -33,6 +33,9 @@ def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results
     # Creating var for best loss (initialize with extreme value)
     best_loss = 1e10
 
+    # Creatinv ar for best test F1-score
+    best_f1_score = 0
+
     # Using GPU if available
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -105,10 +108,16 @@ def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results
         with open(os.path.join(results_path, 'log.csv'), 'a', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(batchsummary)
+            f1_score = batchsummary['test_f1_score']
+            # make deepcopy of model for best F1-score
+            if phase == 'Test' and f1_score > best_f1_score:
+                print(f"The F1-score has been improved with {f1_score - best_f1_score}.")
+                best_f1_score = f1_score
+                copy.deepcopy(model.state_dict())
             # deep copy the model (for best performance)
-            if phase == 'Test' and loss < best_loss:
-                best_loss = loss
-                best_model_wts = copy.deepcopy(model.state_dict())
+            #if phase == 'Test' and loss < best_loss:
+            #    best_loss = loss
+            #    best_model_wts = copy.deepcopy(model.state_dict())
 
     # Calculating elapsed time
     time_elapsed = time.time() - since
