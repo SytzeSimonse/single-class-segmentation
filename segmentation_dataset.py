@@ -197,7 +197,7 @@ class SegmentationDataset(VisionDataset):
             # Applying data augmentation
             if self.data_augmentation and self.subset == "Train":
                 sample = transform(sample, transformation_functions = [
-                  #random_rotation,
+                  random_rotation,
                   #random_brightness
                   #random_contrast
                   random_crop                                            
