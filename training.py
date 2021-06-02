@@ -108,7 +108,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics: dict, results
         with open(os.path.join(results_path, 'log.csv'), 'a', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(batchsummary)
-            f1_score = batchsummary['test_f1_score']
+            f1_score = batchsummary['Test_f1_score']
             # make deepcopy of model for best F1-score
             if phase == 'Test' and f1_score > best_f1_score:
                 print(f"The F1-score has been improved with {f1_score - best_f1_score}.")
