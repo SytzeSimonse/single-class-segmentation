@@ -38,14 +38,17 @@ def tile_ortomosaic(ortomosaic_fname: str, output_folder: str, tile_size: int = 
         )
 
     # Opening ortomosaic
-    ortomosaic = gdal.Open(str(ortomosaic_file_path))
+    #ortomosaic = gdal.Open(str(ortomosaic_file_path)) OSGeo
+    ortomosaic = rs.open(str(ortomosaic_file_path))
 
     # Selecting first band (= trivial)
-    band = ortomosaic.GetRasterBand(1)
+    #band = ortomosaic.GetRasterBand(1)
 
     # Getting width and height of ortomosaic
-    xsize = band.XSize
-    ysize = band.YSize
+    #xsize = band.XSize
+    #ysize = band.YSize
+    xsize = ortomosaic.width
+    ysize = ortomosaic.height
 
     # Creating prefix for tile filenames
     output_filename_prefix = "/tile_"
@@ -123,64 +126,6 @@ def files_to_txt_list(input_folder: str, output_name: str = "tif_files.txt"):
         for file in files:
             if file.endswith(".tif"):
                 f.write(f"{input_folder}/{file}\n")
-
-# def make_inferences(tiles_folder: str, output_folder: str, inference_function, vegetation_index: int = 0, verbose: bool = False):
-#     # Creating path for output folder
-#     output_folder_path = Path(output_folder)
-#     tiles_folder_path = Path(tiles_folder)
-
-#     # Checking if tiles folder exists
-#     if not tiles_folder_path.exists():
-#         raise IOError(
-#             f"{tiles_folder} does not exist."
-#         )
-
-#     # Creating folder for output
-#     if not output_folder_path.exists():
-#         os.mkdir(output_folder_path)
-
-#     # Getting all tiles
-#     tiles = os.listdir(tiles_folder)
-    
-#     # Looping through tiles
-#     for tile in tiles:
-#         # Checking if tile ends with .tif (and not .aux.xml)
-#         if tile.endswith(".tif"):
-#             # Creating full path to tile
-#             tile_path = tiles_folder_path / tile
-
-#             # Print filename
-#             if verbose:
-#                 print(tile_path)
-
-#             # Opening tile with RasterIO
-#             tile_dest = rs.open(tile_path)
-
-#             # Making inference
-#             inference = inference_function(tile_path)
-
-#             # Saving name
-#             inference_fname = output_folder_path / tile
-
-#             # Register GDAL format drivers and configuration options with a
-#             # context manager.
-#             with rs.Env():
-#                 # Write an array as a raster band to a new 8-bit file. For
-#                 # the new file's profile, we start with the profile of the source
-#                 profile = tile_dest.profile
-
-#                 # And then change the band count to 1, set the
-#                 # dtype to uint8, and specify LZW compression.
-#                 profile.update(
-#                     nodata=0,
-#                     dtype=rs.uint8,
-#                     count=1,
-#                     jpeg_quality=100,
-#                     compress='JPEG')
-
-#                 # Storing .tif image in original CRS
-#                 with rs.open(inference_fname, 'w', **profile) as dst:
-#                     dst.write(inference.astype(rs.uint8), 1)
 
 def make_inferences(tiles_folder: str, output_folder: str, inference_function, verbose: bool = False):
     # Creating path for output folder
